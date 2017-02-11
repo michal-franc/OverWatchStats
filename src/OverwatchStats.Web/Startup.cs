@@ -96,7 +96,7 @@ namespace OverwatchStats.Web
         // Microsoft introduced IOption
         // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration#using-options-and-configuration-objects
         // https://github.com/aspnet/Options
-        // Which breaks Dependancy Inversion Principle by forcing the leak of IOption<T> - to JustEatApiAsync in separate project
+        // Which breaks Dependancy Inversion Principle by forcing the leak of IOption<T> - to OverWatchApiAsync in separate project
         // This function is a 'hack' way to avoid it
         private OverwatchApiConfiguration LoadAndCheckOverWatchApiConfiguration(IHostingEnvironment env)
         {

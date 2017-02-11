@@ -1,0 +1,84 @@
+﻿Welcome to ProfileStats Browser
+<br/>
+<p>
+    <input id="battlenettag" type="text" value=""/>
+    <button id="btnSearch" onclick="getProfileStats()">Search</button>
+</p>
+
+<div id="main">
+</div>
+
+<script id="tplProfileStats" type="text/html">
+    <hr/>
+    <ol>
+        @* External api returns Medals-Gold, this design choice is leaking here ;/
+           There should be anti corruption layer in our app that would hide this detail,
+           returning simple medalsGold properties. *@
+        <li>
+            MedalsGold - {{Medals-Gold}}
+        </li>
+        <li>
+            MedalsSilver- {{Medals-Silver}}
+        </li>
+        <li>
+            MedalsBronze - {{Medals-Bronze}}
+        </li>
+    </ol>
+
+    Profile Rating - {{Rating}}
+</script>
+
+<script>
+    function displayError(errorMessage) {
+        let errorsHolder = document.getElementById('main');
+        errorsHolder.innerHTML = errorMessage;    }
+
+    function generateProfileStatsDisplay(rootElem, data) {
+        let tplProfileStats = document.getElementById('tplProfileStats').innerHTML;
+        let output = Mustache.render(tplProfileStats, data);
+        rootElem.innerHTML = output;
+    }
+
+    function battleTagIsValid(battleTag) {
+        let decodedBattleTag = decodeURIComponent(battleTag);
+        return decodedBattleTag.length > 0 && /^[a-zA-Z]+#[0-9]+$/g.test(decodedBattleTag);
+    }
+    
+    function getBattleNetTag() {
+        let battleTag = document.getElementById('battlenettag').value;
+        return encodeURIComponent(battleTag);
+    }
+
+    function showLoading(loadingMessage) {
+        let loadingHolder = document.getElementById('main');
+        loadingHolder.innerHTML = loadingMessage;    }
+
+    function getProfileStats() {
+
+        let battleTag = getBattleNetTag();
+
+        if (!battleTag || !battleTagIsValid(battleTag)) {
+            displayError('Invalid battle-net tag value.');
+            return;
+        }
+
+        showLoading('Loading... it might take a while... external api is slow.');
+
+        fetch('api/profileStats?battleTag=' + battleTag, { headers: { 'Content-Type': "text/json" } })
+            .then(response => {
+
+                if (response.ok) {
+                    return response.json();
+                }
+
+                throw new Error('ProfileStatss fetch failed - response was not 200 but ' + response.status);
+            })
+            .then(json => {
+                let root = document.getElementById('main');
+                generateProfileStatsDisplay(root, json);
+            })
+            .catch(error => {
+                displayError("Something bad happened. Please try again later.");
+            });
+    }
+</script>

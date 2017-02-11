@@ -22,6 +22,7 @@ Tests should start in Visual Studio runner (I am using R# 10 and there is a bug 
 E2E test will run and fail with VS runner without setup. 
 
 To run E2E tests.
+
 1. download Chrome Web Driver - https://chromedriver.storage.googleapis.com/2.27/chromedriver_win32.zip
 2. Run Chrome Driver
 3. Run the app (VS or 'dotnet run')

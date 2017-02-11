@@ -69,11 +69,10 @@ namespace OverwatchStats.Web
 
         private void InitializeContainer(Container container, IApplicationBuilder app, IHostingEnvironment env)
         {
-            // Decided that if Just Eat Api is the only functionality here.
             // We should crash the app at the startup as app is unusable without it.
             // Later on we could move this to RegisterSingleton scope and crash only on request to specific feature.
             // This would still make it possible that user can use other features not dependant on JustEatApi
-            var config = LoadAndCheckJustEatApiConfiguration(env);
+            var config = LoadAndCheckOverWatchApiConfiguration(env);
 
             container.Options.DefaultScopedLifestyle = new AspNetRequestLifestyle();
 
@@ -99,7 +98,7 @@ namespace OverwatchStats.Web
         // https://github.com/aspnet/Options
         // Which breaks Dependancy Inversion Principle by forcing the leak of IOption<T> - to JustEatApiAsync in separate project
         // This function is a 'hack' way to avoid it
-        private OverwatchApiConfiguration LoadAndCheckJustEatApiConfiguration(IHostingEnvironment env)
+        private OverwatchApiConfiguration LoadAndCheckOverWatchApiConfiguration(IHostingEnvironment env)
         {
             var configBuilder = new ConfigurationBuilder()
               .SetBasePath(env.ContentRootPath)
